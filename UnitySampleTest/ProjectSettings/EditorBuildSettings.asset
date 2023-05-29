@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/CardMoveScene.unity
     guid: 63db0b8f4712f924896ef6e1626a1de0
+  - enabled: 1
+    path: Assets/Scenes/ChipMoveScene.unity
+    guid: 19b09286d278da846bcf633107a39bd6
   m_configObjects: {}

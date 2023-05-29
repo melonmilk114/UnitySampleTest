@@ -6,14 +6,10 @@ using UnityEngine.UI;
 
 public class SliderOption : MonoBehaviour
 {
-    public delegate void OnValueChange(float value);
-    private OnValueChange onValueChange = null;
-
     public Slider SliderObj;
     public InputField InputObj;
 
-    private float MaxValue = 1;
-    private float MinValue = 0;
+    private OptionData mOptionData;
 
     // Start is called before the first frame update
     void Start()
@@ -28,43 +24,41 @@ public class SliderOption : MonoBehaviour
         
     }
 
-    public void SetData(float minValue, float maxValue, float initValue, OnValueChange dOnValueChange)
+    public void SetData(ref OptionData optionData)
     {
-        MaxValue = maxValue;
-        MinValue = minValue;
-        SliderObj.value = initValue;
-        onValueChange = dOnValueChange;
-        InputObj.text = string.Format("{0:0.##}", initValue);
+        mOptionData = optionData;
+        SliderObj.value = (mOptionData.NowValue - mOptionData.MinValue) / (mOptionData.MaxValue - mOptionData.MinValue);
+        InputObj.text = string.Format("{0:0.##}", mOptionData.NowValue);
     }
 
 
     public void InputEnd(string text)
     {
-        float value = MinValue;
+        float value = mOptionData.MinValue;
         try
         {
             value = float.Parse(text);
         }
         catch(Exception e)
         {
-            value = MinValue;
+            value = mOptionData.MinValue;
         }
 
-        if (value < MinValue)
-            value = MinValue;
-        if (value > MaxValue)
-            value = MaxValue;
+        if (value < mOptionData.MinValue)
+            value = mOptionData.MinValue;
+        if (value > mOptionData.MaxValue)
+            value = mOptionData.MaxValue;
 
-        SliderObj.value = (value - MinValue) / (MaxValue - MinValue);
+        mOptionData.SetNowValue(value);
+        SliderObj.value = (mOptionData.NowValue - mOptionData.MinValue) / (mOptionData.MaxValue - mOptionData.MinValue);
         InputObj.text = value.ToString();
-
     }
 
     public void UpdateValue(float v)
     {
-        float value = MinValue + ((MaxValue - MinValue) * v);
+        float value = mOptionData.MinValue + ((mOptionData.MaxValue - mOptionData.MinValue) * v);
         InputObj.text = string.Format("{0:0.##}", value);
-        onValueChange(value);
+        mOptionData.SetNowValue(value);
         Debug.Log(value + " " + v);
     }
 }
